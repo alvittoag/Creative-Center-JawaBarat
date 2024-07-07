@@ -30,7 +30,6 @@ export default function PeminjamanRuangan() {
                 {items.map((item, index) => (
                   <li key={index}>
                     <button
-                      onClick={() => setActive(item)}
                       className={`${
                         active === item
                           ? "rounded-md bg-gray-200 text-black"
