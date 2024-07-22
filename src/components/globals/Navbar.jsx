@@ -88,38 +88,42 @@ function Navbar() {
           </ul>
         </div>
 
-        <div className="navbar-end">
-          <h1 className="mr-3 text-slate-500">{data.nama}</h1>
-
-          <div className="dropdown dropdown-end">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle avatar"
-            >
-              <div className="w-8 rounded-full">
-                <img
-                  alt="Tailwind CSS Navbar component"
-                  src="src\assets\account.png"
-                />
+        {user ? (
+          <div className="navbar-end">
+            <h1 className="mr-3 text-slate-500">{data?.nama}</h1>
+            <div className="dropdown dropdown-end">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-ghost btn-circle avatar"
+              >
+                <div className="w-8 rounded-full">
+                  <img
+                    alt="Tailwind CSS Navbar component"
+                    src="src\assets\account.png"
+                  />
+                </div>
               </div>
-            </div>
-            <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52"
-            >
-              <NavLink to="/Profile">
-                <li>
-                  <a className="justify-between">Profile</a>
-                </li>
-              </NavLink>
+              <ul
+                tabIndex={0}
+                className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52"
+              >
+                {}
+                <NavLink to="/Profile">
+                  <li>
+                    <a className="justify-between">Profile</a>
+                  </li>
+                </NavLink>
 
-              <button onClick={handleLogout} className="ml-3 w-10">
-                Logout
-              </button>
-            </ul>
+                <button onClick={handleLogout} className="ml-3 w-10">
+                  Logout
+                </button>
+              </ul>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="navbar-end" />
+        )}
       </div>
     </div>
   );

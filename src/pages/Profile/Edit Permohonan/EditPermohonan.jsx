@@ -6,6 +6,8 @@ import Radio from "../../../components/globals/Radio";
 import React from "react";
 import Swal from "sweetalert2";
 import { supabase } from "../../../lib/supabase";
+import { hasEmptyString } from "../../../lib/cekEmptyString";
+import { checkMaxValues } from "../../../lib/cekMaxPesertas";
 
 export default function EditPermohonan() {
   const {
@@ -13,6 +15,11 @@ export default function EditPermohonan() {
   } = useLocation();
 
   const { pemohon, intansi, acara } = data;
+
+  const ruangan = JSON.parse(acara.ruangan);
+  const peserta = JSON.parse(acara.jumlahPesertas);
+
+  console.log(peserta);
 
   const [dataValuePemohon, setdataValuePemohon] = React.useState({
     namaPemohon: pemohon.namaPemohon,
@@ -50,6 +57,10 @@ export default function EditPermohonan() {
     JSON.parse(data.acara.ruangan)
   );
 
+  const [jumlahPesertas, setJumlahPesertas] = React.useState(peserta);
+
+  console.log(jumlahPesertas);
+
   const [ktp, setKtp] = React.useState(null);
   const [changeKtp, setChangeKtp] = React.useState(false);
   const [loadingUpload, setLoadingUpload] = React.useState(false);
@@ -63,6 +74,9 @@ export default function EditPermohonan() {
     if (checked) {
       setSelectedOptions([...selectedOptions, value]);
     } else {
+      const newData = { ...jumlahPesertas };
+      delete newData[value];
+      setJumlahPesertas(newData);
       setSelectedOptions(selectedOptions.filter((option) => option !== value));
     }
   };
@@ -159,6 +173,35 @@ export default function EditPermohonan() {
     let ktpBaru = null;
     let suratBaru = null;
 
+    if (!jumlahPesertas) {
+      return Swal.fire({
+        title: "Data Acara",
+        text: "Harap lengkapi jumlah peserta",
+        icon: "error",
+      });
+    }
+
+    if (
+      hasEmptyString(jumlahPesertas) ||
+      Object.keys(jumlahPesertas).length === 0
+    ) {
+      return Swal.fire({
+        title: "Data Acara",
+        text: "Harap lengkapi jumlah peserta",
+        icon: "error",
+      });
+    }
+
+    const cekMaxPesertas = checkMaxValues(jumlahPesertas);
+
+    if (cekMaxPesertas.length !== 0) {
+      return Swal.fire({
+        title: "Jumlah Peserta Terlalu Besar",
+        text: cekMaxPesertas.join(", \n"),
+        icon: "error",
+      });
+    }
+
     if (changeKtp) {
       const upload = await uploadKTP();
 
@@ -193,11 +236,14 @@ export default function EditPermohonan() {
 
     dataPinjam[findKey] = {
       id: Math.random(),
-      pemohon: dataValuePemohon,
+      pemohon: { ...dataValuePemohon, ktp: ktpBaru ?? pemohon.ktp },
       intansi: dataValueIntansi,
-      acara: { ...dataValueAcara, ruangan: JSON.stringify(selectedOptions) },
+      acara: {
+        ...dataValueAcara,
+        ruangan: JSON.stringify(selectedOptions),
+        jumlahPesertas: JSON.stringify(jumlahPesertas),
+      },
       user: data.user,
-      ktp: ktpBaru ?? data.ktp,
       surat: suratBaru ?? data.surat,
     };
 
@@ -319,11 +365,9 @@ export default function EditPermohonan() {
 
           <div className="ml-[85px] mt-4">
             <p className="text-sm mb-2 text-black">KTP</p>
-            <img
-              src={changeKtp ? URL.createObjectURL(ktp) : data.ktp}
-              alt="ktp"
-              className="w-96 h-52 object-cover object-center rounded-md"
-            />
+            <a href={pemohon.ktp} className="underline" target="_blank">
+              Lihat KTP
+            </a>
           </div>
 
           <div className="w-full max-w-xs ml-[85px] mt-4 text-black ">
@@ -737,14 +781,29 @@ export default function EditPermohonan() {
             </div>
           </div>
 
-          <TextInput
+          {/* <TextInput
             label={"Jumlah Peserta"}
             placeholder={"Jumlah Peserta"}
             id={"jumlahPeserta"}
             nama={"jumlahPeserta"}
             value={dataValueAcara.jumlahPeserta}
             onChange={handleOnChangeAcara}
-          />
+          /> */}
+
+          {selectedOptions.map((item) => (
+            <TextInput
+              type="tel"
+              key={item}
+              label={`Jumlah Peserta ${item}`}
+              placeholder={"Jumlah Peserta"}
+              id={"jumlahPeserta"}
+              nama={item}
+              onChange={(e) =>
+                setJumlahPesertas({ ...jumlahPesertas, [item]: e.target.value })
+              }
+              value={jumlahPesertas[item]}
+            />
+          ))}
 
           <div className="ml-[85px] mt-4">
             <p className="text-sm mb-2 text-black">Surat Permohonan</p>

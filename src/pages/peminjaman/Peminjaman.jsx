@@ -5,8 +5,8 @@ import DataIntansi from "../../components/form/DataIntansi";
 import DataAcara from "../../components/form/DataAcara";
 
 export default function PeminjamanRuangan() {
-  const [active, setActive] = React.useState("Data Pemohon");
-  const items = ["Data Pemohon", "Data Intansi", "Data Acara"];
+  const [active, setActive] = React.useState("Data Acara");
+  const items = ["Data Acara"];
 
   const [dataSend, setDataSend] = React.useState({
     pemohon: {},
@@ -14,12 +14,11 @@ export default function PeminjamanRuangan() {
     acara: {},
   });
 
-  console.log(dataSend);
-
   return (
     <div>
       <Navbar />
       <div className="flex  bg-white">
+        <div></div>
         <div className="">
           <ul className=" bg-[#F6F6F6]  text-[15px] font-semibold w-64 h-screen">
             <li>
@@ -45,12 +44,13 @@ export default function PeminjamanRuangan() {
           </ul>
         </div>
 
-        {active === "Data Pemohon" && (
+        {/* {active === "Data Pemohon" && (
           <DataPemohon setDataSend={setDataSend} setActive={setActive} />
         )}
         {active === "Data Intansi" && (
           <DataIntansi setDataSend={setDataSend} setActive={setActive} />
-        )}
+        )} */}
+
         {active === "Data Acara" && (
           <DataAcara setDataSend={setDataSend} dataSend={dataSend} />
         )}

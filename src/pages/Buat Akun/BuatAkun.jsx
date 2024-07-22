@@ -3,21 +3,24 @@ import TextInputNonLabel from "../../components/globals/TextInputNonLabel";
 import Swal from "sweetalert2";
 import { supabase } from "../../lib/supabase";
 import { useNavigate } from "react-router-dom";
+import emailjs from "@emailjs/browser";
 
 export default function BuatAkun() {
   const [inputValue, setInputValue] = React.useState({
     nama: "",
     nomer_telepon: "",
     email: "",
-    no_ktp: "",
     password: "",
     konfirmPassword: "",
   });
+  const [loading, setLoading] = React.useState(false);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
 
     try {
       if (inputValue.password !== inputValue.konfirmPassword) {
@@ -34,6 +37,8 @@ export default function BuatAkun() {
         });
       }
 
+      const token = Math.ceil(Math.random() * 99999);
+
       const { error } = await supabase
         .from("users")
         .insert({
@@ -42,11 +47,28 @@ export default function BuatAkun() {
           email: inputValue.email,
           no_ktp: inputValue.no_ktp,
           password: inputValue.password,
+          verification_code: token,
         })
         .select();
 
       if (error) {
         throw error;
+      }
+
+      if (!error) {
+        const res = await emailjs.send(
+          "service_4xfv1p4",
+          "template_impxbxf",
+          {
+            name: inputValue.nama,
+            email: inputValue.email,
+            message: token,
+            recipent: inputValue.email,
+          },
+          "FEE3F8SRKq4MKTM0i"
+        );
+
+        console.log(res);
       }
 
       Swal.fire({
@@ -58,7 +80,7 @@ export default function BuatAkun() {
     } catch (error) {
       if (error.code === "23505") {
         return Swal.fire({
-          title: "Username sudah terdaftar",
+          title: "Email sudah terdaftar",
           icon: "error",
         });
       }
@@ -67,6 +89,8 @@ export default function BuatAkun() {
         title: "Gagal Sign Up",
         icon: "error",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -118,18 +142,7 @@ export default function BuatAkun() {
                   })
                 }
               />
-              <TextInputNonLabel
-                id={"noKtpPenggunaBaru"}
-                placeholder={"No KTP"}
-                nama={"noKtpPenggunaBaru"}
-                value={inputValue.no_ktp}
-                onChange={(e) =>
-                  setInputValue({
-                    ...inputValue,
-                    no_ktp: e.target.value,
-                  })
-                }
-              />
+
               <TextInputNonLabel
                 id={"passwordPenggunaBaru"}
                 placeholder={"Password"}
@@ -156,10 +169,11 @@ export default function BuatAkun() {
               />
 
               <button
+                disabled={loading}
                 onClick={handleSubmit}
-                className="btn mt-5 border border-white text-white"
+                className="btn mt-5 border border-white text-white disabled:text-white"
               >
-                Sign Up
+                {loading ? "Loading..." : "Buat Akun"}
               </button>
             </div>
           </div>

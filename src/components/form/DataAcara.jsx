@@ -6,6 +6,9 @@ import * as Yup from "yup";
 import Swal from "sweetalert2";
 import React from "react";
 import { supabase } from "../../lib/supabase";
+import { hasEmptyString } from "../../lib/cekEmptyString";
+import { checkMaxValues } from "../../lib/cekMaxPesertas";
+import { getValues } from "../../lib/getValues";
 
 const validation = Yup.object().shape({
   lokasiGedung: Yup.string().required("Lokasi Gedung Wajib Diisi"),
@@ -16,7 +19,7 @@ const validation = Yup.object().shape({
   tanggalAkhirAcara: Yup.string().required("Tanggal Akhir Acara Wajib Diisi"),
   jamMulai: Yup.string().required("Jam Mulai Wajib Diisi"),
   jamBerakhir: Yup.string().required("Jam Berakhir Wajib Diisi"),
-  jumlahPeserta: Yup.number().integer().required("Jumlah Peserta Wajib Diisi"),
+  // jumlahPeserta: Yup.number().integer().required("Jumlah Peserta Wajib Diisi"),
 });
 
 export default function DataAcara({ setDataSend, dataSend }) {
@@ -31,19 +34,113 @@ export default function DataAcara({ setDataSend, dataSend }) {
       tanggalAkhirAcara: state?.tanggalAkhirAcara || "",
       jamMulai: state?.jamMulai || "",
       jamBerakhir: state?.jamBerakhir || "",
-      jumlahPeserta: state?.jumlahPeserta || "",
+      // jumlahPeserta: state?.jumlahPeserta || "",
     },
     validationSchema: validation,
   });
   const [surat, setSurat] = React.useState(null);
   const [selectedOptions, setSelectedOptions] = React.useState([]);
+  const [jumlahPesertas, setJumlahPesertas] = React.useState(null);
+
   const [loadingUpload, setLoadingUpload] = React.useState(false);
+  const [loading1, setLoading1] = React.useState(false);
+  const [loading2, setLoading2] = React.useState(false);
+
+  const [dataFormPemohon, setDataFormPemohon] = React.useState(null);
+  const [dataFormIntansi, setDataFormIntansi] = React.useState(null);
+
+  React.useEffect(() => {
+    const getData = async () => {
+      setLoading1(true);
+      const userLcl = localStorage.getItem("user");
+
+      const user = JSON.parse(userLcl);
+      try {
+        let { data, error } = await supabase
+          .from("pemohon")
+          .select("*")
+          .eq("user_id", user.id);
+
+        if (error) throw error;
+        const singleData = data[0];
+
+        const dataSave = {
+          alamatPemohon: singleData?.alamatPemohon,
+          emailPemohon: singleData?.emailPemohon,
+          kecamatanPemohon: singleData?.kecamatanPemohon,
+          kelurahanPemohon: singleData?.kelurahanPemohon,
+          namaPemohon: singleData?.namaPemohon,
+          nikPemohon: singleData?.nikPemohon,
+          noPemohon: singleData?.noPemohon,
+          statusPemohon: singleData?.statusPemohon,
+          kabPemohon: singleData?.kabPemohon,
+          ktp: singleData?.ktp,
+        };
+
+        setDataFormPemohon(singleData ? dataSave : null);
+      } catch (error) {
+        return Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Gagal mengambil data",
+        });
+      } finally {
+        setLoading1(false);
+      }
+    };
+
+    getData();
+  }, []);
+
+  React.useEffect(() => {
+    const getData = async () => {
+      setLoading2(true);
+      const userLcl = localStorage.getItem("user");
+
+      const user = JSON.parse(userLcl);
+      try {
+        let { data, error } = await supabase
+          .from("intansi")
+          .select("*")
+          .eq("user_id", user.id);
+
+        if (error) throw error;
+
+        const singleData = data[0];
+
+        const dataSave = {
+          alamatIntansi: singleData?.alamatIntansi,
+          emailIntansi: singleData?.emailIntansi,
+          namaIntansi: singleData?.namaIntansi,
+          noTelpIntansi: singleData?.noTelpIntansi,
+          statusIntansi: singleData?.statusIntansi,
+        };
+
+        setDataFormIntansi(singleData ? dataSave : null);
+      } catch (error) {
+        return Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Gagal mengambil data",
+        });
+      } finally {
+        setLoading2(false);
+      }
+    };
+
+    getData();
+  }, []);
+
+  console.log(jumlahPesertas);
 
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
     if (checked) {
       setSelectedOptions([...selectedOptions, value]);
     } else {
+      const newData = { ...jumlahPesertas };
+      delete newData[value];
+      setJumlahPesertas(newData);
       setSelectedOptions(selectedOptions.filter((option) => option !== value));
     }
   };
@@ -87,6 +184,8 @@ export default function DataAcara({ setDataSend, dataSend }) {
     }
   };
 
+  console.log(jumlahPesertas);
+
   const handleSubmit = async () => {
     const isError =
       Object.keys(formik.errors).length !== 0 ||
@@ -97,6 +196,35 @@ export default function DataAcara({ setDataSend, dataSend }) {
       return Swal.fire({
         title: "Data Acara",
         text: "Harap lengkapi semua data",
+        icon: "error",
+      });
+    }
+
+    if (!jumlahPesertas) {
+      return Swal.fire({
+        title: "Data Acara",
+        text: "Harap lengkapi jumlah peserta",
+        icon: "error",
+      });
+    }
+
+    if (
+      hasEmptyString(jumlahPesertas) ||
+      Object.keys(jumlahPesertas).length === 0
+    ) {
+      return Swal.fire({
+        title: "Data Acara",
+        text: "Harap lengkapi jumlah peserta",
+        icon: "error",
+      });
+    }
+
+    const cekMaxPesertas = checkMaxValues(jumlahPesertas);
+
+    if (cekMaxPesertas.length !== 0) {
+      return Swal.fire({
+        title: "Jumlah Peserta Terlalu Besar",
+        text: cekMaxPesertas.join(", \n"),
         icon: "error",
       });
     }
@@ -130,12 +258,17 @@ export default function DataAcara({ setDataSend, dataSend }) {
       acara: {
         ...formik.values,
         ruangan: JSON.stringify(selectedOptions),
+        jumlahPesertas: JSON.stringify(jumlahPesertas),
       },
       user: user,
       surat: upload.surat,
     };
 
-    const newDataSend = { ...dataSend, ...dataAcara };
+    const newDataSend = {
+      pemohon: dataFormPemohon,
+      intansi: dataFormIntansi,
+      ...dataAcara,
+    };
 
     if (prevData?.length > 0) {
       const newData = [...prevData, newDataSend];
@@ -153,8 +286,55 @@ export default function DataAcara({ setDataSend, dataSend }) {
     navigate("/profile");
   };
 
+  if (loading1 || loading2) {
+    return (
+      <div className="flex justify-center items-center h-screen w-full -mt-20">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!dataFormPemohon || !dataFormIntansi) {
+    return (
+      <div className="flex flex-col gap-5 justify-center items-center h-screen w-full -mt-20">
+        <h1 className="text-xl">
+          Harap isi data Pemohon dan Instansi terlebih dahulu
+        </h1>
+
+        <button
+          className="bg-green-600 p-3 w-64 text-white rounded-md"
+          onClick={() =>
+            navigate("/form-profile", {
+              state: { pemohon: null, intansi: null },
+            })
+          }
+        >
+          isi data disini
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col bg-[#fcfcfc] w-[80%] m-7 rounded-lg border justify-center">
+      <div className="px-10 py-5 flex items-center gap-5 bg-yellow-400 text-black">
+        <h1>
+          Sebelum melakukan peminjaman, anda dapat melihat dan mengubah data
+          pemohon dan instansi terlebih dahulu agar tidak ada kesalahan data
+        </h1>
+
+        <button
+          onClick={() =>
+            navigate("/form-profile", {
+              state: { pemohon: dataFormPemohon, intansi: dataFormIntansi },
+            })
+          }
+          className="px-5 py-2 bg-green-600 text-white rounded-md"
+        >
+          Cek disini
+        </button>
+      </div>
+
       {/* lokasi gedung */}
       <label className=" grid grid-cols-2 form-control w-full max-w-xs ml-20 mt-4">
         <div className="label">
@@ -547,7 +727,7 @@ export default function DataAcara({ setDataSend, dataSend }) {
           </div>
         </div>
       </div>
-
+      {/* 
       <TextInput
         label={"Jumlah Peserta"}
         placeholder={"Jumlah Peserta"}
@@ -555,7 +735,21 @@ export default function DataAcara({ setDataSend, dataSend }) {
         nama={"jumlahPeserta"}
         onChange={handleOnChange}
         value={formik.values.jumlahPeserta}
-      />
+      /> */}
+
+      {selectedOptions.map((item) => (
+        <TextInput
+          type="tel"
+          key={item}
+          label={`Jumlah Peserta ${item}`}
+          placeholder={"Jumlah Peserta"}
+          id={"jumlahPeserta"}
+          nama={item}
+          onChange={(e) =>
+            setJumlahPesertas({ ...jumlahPesertas, [item]: e.target.value })
+          }
+        />
+      ))}
 
       <div className="w-full max-w-xs ml-[85px] mt-4 text-black ">
         <p className="text-sm mb-2">Unggah Surat Permohonan</p>

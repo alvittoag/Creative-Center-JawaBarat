@@ -5,6 +5,7 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import convertStringify from "../../lib/convertStringify";
 import Swal from "sweetalert2";
 import { supabase } from "../../lib/supabase";
+import { getValues } from "../../lib/getValues";
 
 export default function UploadLaporan() {
   const { state } = useLocation();
@@ -16,7 +17,13 @@ export default function UploadLaporan() {
   const dataPemohon = convertStringify(pemohon);
   const dataAcara = convertStringify(acara);
 
+  const peserta = getValues(convertStringify(dataAcara.jumlahPesertas)).join(
+    ", "
+  );
+
   const navigate = useNavigate();
+
+  console.log(peserta);
 
   const handleUpload = async () => {
     if (rangkuman.length === 0) {
@@ -94,7 +101,7 @@ export default function UploadLaporan() {
             id={"jumlahPeserta"}
             nama={"jumlahPeserta"}
             type={"text"}
-            value={dataAcara.jumlahPeserta}
+            value={peserta}
             disable
           />
 

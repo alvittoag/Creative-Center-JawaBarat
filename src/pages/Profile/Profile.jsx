@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
 import Navbar from "../../components/globals/Navbar";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import React from "react";
 import { supabase } from "../../lib/supabase";
 import convertStringify from "../../lib/convertStringify";
@@ -9,8 +9,13 @@ import { convertRupiah } from "../../lib/convertRupiah";
 export default function Profile() {
   const [dataDraft, setdataDraft] = React.useState(null);
   const [dataPinjam, setdataPinjam] = React.useState([]);
+
+  console.log(dataDraft);
+
   const [refetch, setRefetch] = React.useState(null);
   const [dataKerusakan, setDataKerusakan] = React.useState([]);
+  const [dataFormPemohon, setDataFormPemohon] = React.useState(null);
+  const [dataFormIntansi, setDataFormIntansi] = React.useState(null);
 
   const localStorageuser = localStorage.getItem("user");
 
@@ -74,6 +79,52 @@ export default function Profile() {
     getData();
   }, []);
 
+  React.useEffect(() => {
+    const getData = async () => {
+      const userLcl = localStorage.getItem("user");
+
+      const user = JSON.parse(userLcl);
+      try {
+        let { data, error } = await supabase
+          .from("pemohon")
+          .select("*")
+          .eq("user_id", user.id);
+
+        if (error) throw error;
+
+        setDataFormPemohon(data[0] ?? null);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getData();
+  }, []);
+
+  React.useEffect(() => {
+    const getData = async () => {
+      const userLcl = localStorage.getItem("user");
+
+      const user = JSON.parse(userLcl);
+      try {
+        let { data, error } = await supabase
+          .from("intansi")
+          .select("*")
+          .eq("user_id", user.id);
+
+        if (error) throw error;
+
+        setDataFormIntansi(data[0] ?? null);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getData();
+  }, []);
+
+  const navigate = useNavigate();
+
   const handleDeleteDraft = (id, confirm) => {
     console.log(id, confirm);
     const newData = dataDraft.filter((item) => item.id !== id);
@@ -135,10 +186,57 @@ export default function Profile() {
     }
   };
 
+  const handleCancel = async (id) => {
+    try {
+      const { error } = await supabase
+        .from("peminjaman")
+        .update({
+          user_status: "Dibatalkan",
+          admin_status: "Dibatalkan",
+          admin_utama_status: "Dibatalkan",
+        })
+        .eq("id", id)
+        .select();
+
+      if (error) {
+        throw error;
+      }
+
+      Swal.fire({
+        title: "Berhasil",
+        text: "Data berhasil dibatalkan",
+        icon: "success",
+      });
+
+      setRefetch(Math.random());
+    } catch (error) {
+      Swal.fire({
+        title: "Gagal",
+        text: "Data gagal dibatalkan",
+        icon: "error",
+      });
+      console.log(error);
+    }
+  };
+
   return (
     <div className="bg-white h-screen">
       <Navbar />
-      <p className="text-black px-10 pt-10 pb-5 font-semibold text-lg">
+
+      <div className="px-10 py-5">
+        <button
+          className=" py-5 bg-green-500 text-white w-96 rounded-2xl"
+          onClick={() =>
+            navigate("/form-profile", {
+              state: { pemohon: dataFormPemohon, intansi: dataFormIntansi },
+            })
+          }
+        >
+          Isi Data Pemohon dan Intansi
+        </button>
+      </div>
+
+      <p className="text-black px-10  pb-5 font-semibold text-lg">
         Data Permohonan
       </p>
       <div className="overflow-x-auto bg-white mx-10 p-5 rounded-lg text-black border ">
@@ -223,18 +321,28 @@ export default function Profile() {
                       item.user_status === "Diterima" && "bg-green-200"
                     } ${item.user_status === "Ditolak" && "bg-red-200"} ${
                       item.user_status === "Selesai" && "bg-green-300"
+                    } ${
+                      item.user_status === "Dibatalkan" &&
+                      "bg-red-600 text-white"
                     }`}
                   >
                     {item.user_status}
                   </p>
                 </td>
                 {item.user_status === "Diterima" && (
-                  <th className="flex">
+                  <th className="flex items-center justify-center gap-5">
                     <NavLink to="/detailPermohonan" state={item}>
                       <p className="cursor-pointer font-normal bg-white p-2 rounded-lg">
                         details
                       </p>
                     </NavLink>
+
+                    <button
+                      onClick={() => handleCancel(item.id)}
+                      className="bg-red-600 p-2 rounded-md text-white font-normal"
+                    >
+                      Batalkan
+                    </button>
                   </th>
                 )}
 

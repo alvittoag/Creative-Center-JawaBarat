@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 
 export default function Login() {
   const [inputValue, setInputValue] = React.useState({
-    username: "",
+    email: "",
     password: "",
   });
 
@@ -16,8 +16,19 @@ export default function Login() {
       let { data, error } = await supabase
         .from("users")
         .select("*")
-        .eq("nama", inputValue.username)
+        .eq("email", inputValue.email)
         .eq("password", inputValue.password);
+
+      const dataSingle = data[0];
+
+      if (dataSingle?.is_authenticated === false) {
+        localStorage.setItem("user_email", JSON.stringify(dataSingle.email));
+
+        return Swal.fire({
+          title: "Harap melakukan verifikasi terlebih dahulu",
+          icon: "info",
+        }).then(() => navigate("/verification"));
+      }
 
       if (error) {
         throw error;
@@ -25,7 +36,7 @@ export default function Login() {
 
       if (data.length === 0) {
         return Swal.fire({
-          title: "Username atau Password Salah",
+          title: "Email atau Password Salah",
           icon: "error",
         });
       }
@@ -39,6 +50,7 @@ export default function Login() {
 
       navigate("/");
     } catch (error) {
+      console.log(error);
       Swal.fire({
         title: "Gagal Login",
         icon: "error",
@@ -65,13 +77,13 @@ export default function Login() {
                   <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
                 </svg>
                 <input
-                  type="text"
+                  type="email"
                   className="grow"
-                  value={inputValue.username}
+                  value={inputValue.email}
                   onChange={(e) =>
-                    setInputValue({ ...inputValue, username: e.target.value })
+                    setInputValue({ ...inputValue, email: e.target.value })
                   }
-                  placeholder="Username"
+                  placeholder="Email"
                 />
               </label>
 

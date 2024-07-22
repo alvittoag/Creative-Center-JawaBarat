@@ -20,6 +20,8 @@ import DetailKerusakanFasilitas from "../pages/Profile/Detail Kerusakan Fasilita
 import PrivateRoute from "../components/private-route/PrivateRoute";
 import PrivateRouteAuth from "../components/private-route/PrivateRouteAuth";
 import Peminjaman from "../pages/peminjaman/Peminjaman";
+import VerificationPage from "../pages/verification/VerificationPage";
+import FormProfile from "../components/form/FormProfile";
 
 const Router = () => {
   return (
@@ -29,21 +31,13 @@ const Router = () => {
           <Route element={<PrivateRouteAuth />}>
             <Route path="/BuatAkun" Component={BuatAkun} />
             <Route path="/login" Component={Login} />
+            <Route path="/verification" Component={VerificationPage} />
           </Route>
 
           {/* Private Route */}
           <Route element={<PrivateRoute />}>
-            <Route path="/" exact Component={LandingPage} />
-            <Route path="/jadwal" Component={Jadwal} />
-            <Route path="/jadwalAD" Component={JadwalAD} />
-            <Route path="/jadwalPCC" Component={JadwalPCC} />
-            {/* <Route path="/peminjaman" Component={PeminjamanRuangan} /> */}
             <Route path="/peminjaman" Component={Peminjaman} />
-            <Route path="/BogorCreativeCenter" Component={BCC} />
-            <Route path="/PurwakartaCreativeCenter" Component={PCC} />
-            <Route path="/AhmadDjuhara" Component={AhmadDjuhara} />
-            <Route path="/DataIntansi" Component={DataIntansi} />
-            <Route path="/DataAcara" Component={DataAcara} />
+            <Route path="/form-profile" Component={FormProfile} />
             <Route path="/Profile" Component={Profile} />
             <Route path="/detailPermohonan" Component={DetailPermohonan} />
             <Route path="/editPermohonan" Component={EditPermohonan} />
@@ -57,6 +51,18 @@ const Router = () => {
               Component={DetailKerusakanFasilitas}
             />
           </Route>
+
+          <Route path="/" exact Component={LandingPage} />
+          <Route path="/jadwal" Component={Jadwal} />
+          <Route path="/jadwalAD" Component={JadwalAD} />
+          <Route path="/jadwalPCC" Component={JadwalPCC} />
+          {/* <Route path="/peminjaman" Component={PeminjamanRuangan} /> */}
+
+          <Route path="/BogorCreativeCenter" Component={BCC} />
+          <Route path="/PurwakartaCreativeCenter" Component={PCC} />
+          <Route path="/AhmadDjuhara" Component={AhmadDjuhara} />
+          <Route path="/DataIntansi" Component={DataIntansi} />
+          <Route path="/DataAcara" Component={DataAcara} />
         </Routes>
       </BrowserRouter>
     </>
