@@ -70,6 +70,8 @@ export default function Jadwal({ label }) {
           namaRuangan: "Ruang Galeri",
         });
 
+        console.log(ruangGaleri);
+
         const auditorium = findRuangan({
           data: filteredLocation,
           namaRuangan: "Auditorium",
@@ -124,6 +126,8 @@ export default function Jadwal({ label }) {
 
     getData();
   }, [selectDate]);
+
+  console.log(jadwalRuangan);
 
   return (
     <div className="bg-white">
