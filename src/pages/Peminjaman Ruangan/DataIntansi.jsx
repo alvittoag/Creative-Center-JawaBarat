@@ -11,7 +11,10 @@ const validation = Yup.object().shape({
     .min(2, "Nama Intansi Minimal Terdiri Dari 2 Karakter"),
   alamatIntansi: Yup.string().required("Alamat Intansi Harus Diisi"),
   noTelpIntansi: Yup.string().required("No Telepon Intansi Harus Diisi"),
-  emailIntansi: Yup.string().required("Email Intnasi Harus Diisi"),
+  emailIntansi: 
+    Yup.string()
+    .email("Format Email Harus Benar")
+    .required("Email Intnasi Harus Diisi"),
   statusIntansi: Yup.string().required("Status Intansi Harus Diisi"),
 });
 

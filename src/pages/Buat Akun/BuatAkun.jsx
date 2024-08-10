@@ -25,7 +25,7 @@ export default function BuatAkun() {
     try {
       if (inputValue.password !== inputValue.konfirmPassword) {
         return Swal.fire({
-          title: "Password tidak sama",
+          title: "Password dan konfirmasi password tidak sama",
           icon: "error",
         });
       }
@@ -72,7 +72,7 @@ export default function BuatAkun() {
       }
 
       Swal.fire({
-        title: "Berhasil",
+        title: "Berhasil Membuat Akun!",
         icon: "success",
       });
 
@@ -80,7 +80,7 @@ export default function BuatAkun() {
     } catch (error) {
       if (error.code === "23505") {
         return Swal.fire({
-          title: "Email sudah terdaftar",
+          title: "Email sudah terdaftar!",
           icon: "error",
         });
       }

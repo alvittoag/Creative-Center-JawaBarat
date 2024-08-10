@@ -30,6 +30,13 @@ export default function Login() {
         }).then(() => navigate("/verification"));
       }
 
+      if (Object.keys(inputValue).some((key) => inputValue[key] === "")) {
+        return Swal.fire({
+          title: "Harap isi semua field",
+          icon: "error",
+        });
+      }
+
       if (error) {
         throw error;
       }
