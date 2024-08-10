@@ -9,6 +9,7 @@ import { supabase } from "../../lib/supabase";
 import { hasEmptyString } from "../../lib/cekEmptyString";
 import { checkMaxValues } from "../../lib/cekMaxPesertas";
 import { getValues } from "../../lib/getValues";
+import { cekValidDate } from "../../lib/cekValidDate";
 
 const validation = Yup.object().shape({
   lokasiGedung: Yup.string().required("Lokasi Gedung Wajib Diisi"),
@@ -131,8 +132,6 @@ export default function DataAcara({ setDataSend, dataSend }) {
     getData();
   }, []);
 
-  console.log(jumlahPesertas);
-
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
     if (checked) {
@@ -184,8 +183,6 @@ export default function DataAcara({ setDataSend, dataSend }) {
     }
   };
 
-  console.log(jumlahPesertas);
-
   const handleSubmit = async () => {
     const isError =
       Object.keys(formik.errors).length !== 0 ||
@@ -225,6 +222,17 @@ export default function DataAcara({ setDataSend, dataSend }) {
       return Swal.fire({
         title: "Jumlah Peserta Terlalu Besar",
         text: cekMaxPesertas.join(", \n"),
+        icon: "error",
+      });
+    }
+
+    if (
+      !cekValidDate(formik.values.tanggalMulaiAcara) ||
+      !cekValidDate(formik.values.tanggalAkhirAcara)
+    ) {
+      return Swal.fire({
+        title: "Tanggal Acara Tidak Valid",
+        text: "Tanggal mulai dan tanggal akhir acara tidak boleh kurang dari hari ini",
         icon: "error",
       });
     }
