@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import TextInput from "../../components/globals/TextInput";
 import TextArea from "../../components/globals/TextArea";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -17,19 +17,69 @@ export default function UploadLaporan() {
   const dataPemohon = convertStringify(pemohon);
   const dataAcara = convertStringify(acara);
 
+  const [foto, setfoto] = useState(null);
+  const [loadingUpload, setLoadingUpload] = React.useState(false);
+
   const peserta = getValues(convertStringify(dataAcara.jumlahPesertas)).join(
     ", "
   );
 
   const navigate = useNavigate();
 
-  console.log(peserta);
+  const uploadFoto = async () => {
+    setLoadingUpload(true);
+
+    try {
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("berkas")
+        .upload(`bukti/${dataPemohon.namaPemohon} - ${Math.random()}`, foto);
+
+      if (uploadError) {
+        console.error(uploadError);
+        return { error: true };
+      }
+
+      const { data, error: publicURLError } = await supabase.storage
+        .from("berkas")
+        .getPublicUrl(uploadData.path);
+
+      if (publicURLError) {
+        console.error(publicURLError);
+        return { error: true };
+      }
+
+      return { foto: data.publicUrl };
+    } catch (error) {
+      console.error("An unexpected error occurred:", error);
+      return { error: true };
+    } finally {
+      setLoadingUpload(false);
+    }
+  };
 
   const handleUpload = async () => {
     if (rangkuman.length === 0) {
-      Swal.fire({
+      return Swal.fire({
         title: "Gagal",
         text: "Harap isi data rangkuman",
+        icon: "error",
+      });
+    }
+
+    if (!foto) {
+      return Swal.fire({
+        title: "Laporan",
+        text: "Harap unggah Foto",
+        icon: "error",
+      });
+    }
+
+    const upload = await uploadFoto();
+
+    if (upload?.error) {
+      return Swal.fire({
+        title: "...Ooops",
+        text: "Terjadi kesalahan saat upload foto",
         icon: "error",
       });
     }
@@ -37,7 +87,11 @@ export default function UploadLaporan() {
     try {
       const { error } = await supabase
         .from("peminjaman")
-        .update({ user_status: "Selesai", rangkuman_acara: rangkuman })
+        .update({
+          user_status: "Selesai",
+          rangkuman_acara: rangkuman,
+          foto_laporan: upload.foto,
+        })
         .eq("id", id)
         .select();
 
@@ -105,12 +159,23 @@ export default function UploadLaporan() {
             disable
           />
 
+          <div className="w-full max-w-xs ml-[85px] mt-4 text-black ">
+            <p className="text-sm mb-2">Unggah Foto</p>
+            <input
+              type="file"
+              className="file-input file-input-bordered file-input-md  w-full max-w-xs bg-white"
+              name="ktp"
+              onChange={(e) => setfoto(e.target.files[0])}
+            />
+          </div>
+
           <div className="flex justify-center mt-10">
             <div
               onClick={handleUpload}
+              disabled={loadingUpload}
               className="btn w-24 bg-green-400 text-black hover:bg-white"
             >
-              Upload
+              {loadingUpload ? "Loading..." : "Upload"}
             </div>
           </div>
         </div>
