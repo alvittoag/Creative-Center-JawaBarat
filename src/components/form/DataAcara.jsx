@@ -65,7 +65,10 @@ export default function DataAcara({ setDataSend, dataSend }) {
         if (error) throw error;
         const singleData = data[0];
 
+        console.log(singleData);
+
         const dataSave = {
+          id: singleData?.id,
           alamatPemohon: singleData?.alamatPemohon,
           emailPemohon: singleData?.emailPemohon,
           kecamatanPemohon: singleData?.kecamatanPemohon,
@@ -109,7 +112,10 @@ export default function DataAcara({ setDataSend, dataSend }) {
 
         const singleData = data[0];
 
+        console.log(singleData);
+
         const dataSave = {
+          id: singleData?.id,
           alamatIntansi: singleData?.alamatIntansi,
           emailIntansi: singleData?.emailIntansi,
           namaIntansi: singleData?.namaIntansi,

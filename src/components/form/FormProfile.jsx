@@ -10,6 +10,8 @@ export default function FormProfile() {
 
   const { state } = useLocation();
 
+  console.log(state);
+
   const handleChange = (item) => {
     if (state.pemohon && state.intansi) {
       setActive(item);

@@ -26,8 +26,6 @@ const validation = Yup.object().shape({
 });
 
 export default function DataPemohonProfile({ setActive, data }) {
-  console.log(data);
-
   const formik = useFormik({
     initialValues: {
       namaPemohon: data?.namaPemohon || "",
@@ -42,6 +40,8 @@ export default function DataPemohonProfile({ setActive, data }) {
     },
     validationSchema: validation,
   });
+
+  console.log(data);
 
   const [ktp, setKtp] = React.useState(null);
   const [loadingUpload, setLoadingUpload] = React.useState(false);
