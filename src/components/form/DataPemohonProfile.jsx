@@ -41,8 +41,6 @@ export default function DataPemohonProfile({ setActive, data }) {
     validationSchema: validation,
   });
 
-  console.log(data);
-
   const [ktp, setKtp] = React.useState(null);
   const [loadingUpload, setLoadingUpload] = React.useState(false);
 
@@ -125,7 +123,7 @@ export default function DataPemohonProfile({ setActive, data }) {
           .from("pemohon")
           .update({
             ...formik.values,
-            ktp: data?.ktp ?? upload?.ktp,
+            ktp: ktp ? upload?.ktp : data?.ktp,
           })
           .eq("id", data.id);
 
