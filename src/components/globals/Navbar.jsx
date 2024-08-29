@@ -82,9 +82,11 @@ function Navbar() {
                 <a>Peminjaman Ruangan</a>
               </li>
             </NavLink>
-            <li>
-              <a>Pedoman Ruangan</a>
-            </li>
+            <NavLink to="/pedomanRuangan">
+              <li>
+                <a>Pedoman Ruangan</a>
+              </li>
+            </NavLink>
           </ul>
         </div>
 

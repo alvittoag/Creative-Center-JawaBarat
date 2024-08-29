@@ -67,12 +67,14 @@ function LandingPage() {
               dan pelatihan, pusat promosi dan pemasaran, pusat pengembangan
               industri perangkat lunak dan konten, serta pusat inkubasi bisnis.
             </p>
-            <a
-              href=""
-              className="btn text-white border-white bg-[#1A8C44] mt-10"
-            >
-              Lihat Persyaratan
-            </a>
+            <NavLink to="/pedomanRuangan">
+              <a
+                href=""
+                className="btn text-white border-white bg-[#1A8C44] mt-10"
+              >
+                Lihat Persyaratan
+              </a>
+            </NavLink>
           </div>
         </div>
       </div>

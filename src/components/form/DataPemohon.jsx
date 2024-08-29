@@ -11,15 +11,23 @@ const validation = Yup.object().shape({
   namaPemohon: Yup.string()
     .required("Nama Pemohon Harus Diisi")
     .min(3, "Nama Pemohon Minimal Terdiri Dari 3 Karakter"),
-  alamatPemohon: Yup.string().required("Alamat Pemohon Harus Diisi"),
-  kecamatanPemohon: Yup.string().required("Kecamatan Pemohon Harus Diisi"),
-  kelurahanPemohon: Yup.string().required("Kelurahan Pemohon Harus Diisi"),
-  kabPemohon: Yup.string().required("Kabupaten/Kota Pemohon Harus Diisi"),
-  statusPemohon: Yup.string().required("Status Pemohon Harus Diisi"),
+  alamatPemohon: Yup.string()
+    .required("Alamat Pemohon Harus Diisi"),
+  kecamatanPemohon: Yup.string()
+    .required("Kecamatan Pemohon Harus Diisi"),
+  kelurahanPemohon: Yup.string()
+    .required("Kelurahan Pemohon Harus Diisi"),
+  kabPemohon: Yup.string()
+    .required("Kabupaten/Kota Pemohon Harus Diisi"),
+  statusPemohon: Yup.string()
+    .required("Status Pemohon Harus Diisi"),
   noPemohon: Yup.number()
     .integer()
     .required("Nomor Telepon Pemohon Harus Diisi"),
-  nikPemohon: Yup.number().integer().required("NIK Pemohon Harus Diisi"),
+  nikPemohon: Yup.number()
+    .integer()
+    .required("NIK Pemohon Harus Diisi")
+    .min(16, "NIK Harus Terdiri dari 16 Digit"),
   emailPemohon: Yup.string()
     .email("Format Email Harus Benar")
     .required("Email Pemohon Harus Diisi"),

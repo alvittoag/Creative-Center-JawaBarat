@@ -3,6 +3,7 @@ import Navbar from '../../components/globals/Navbar'
 import CardRuangan from '../../components/globals/CardRuangan'
 import assets from '../../assets/assets'
 import Footer from '../../components/globals/Footer'
+import { NavLink } from "react-router-dom";
 
 export default function PCC() {
   return (
@@ -17,7 +18,9 @@ export default function PCC() {
         <p className='text-black leading-relaxed text-justify mr-20'>Purwakarta Creative Center memiliki letak yang strategis berada di pusat koda dan berada di sebelah timur situ buleud yang menjadi ikon Kabupaten Purwakarta. Purwakarta Creative Center juga memiliki akses yang mudah dijangkau karena dekat dengan Gerbang Tol Jatiluhur, dimana dapat ditempuh kurang lebih 10 menit.</p>
             <p className='text-black mt-4'><a className='font-bold'>Luas Area</a> : 23.826 m2</p>
             <p className='text-black mt-3'><a className='font-bold'>Kapasitas Parkir</a> : 100 Mobil dan Motor</p>
-            <a href="" className='btn text-white border-white bg-[#1A8C44] mt-10 w-44'>Lihat Jadwal Ruangan</a>
+            <NavLink to="/jadwalPCC">
+              <a href="" className='btn text-white border-white bg-[#1A8C44] mt-10 w-44'>Lihat Jadwal Ruangan</a>
+            </NavLink>
         </div>
         <div className="width: 100%"><iframe width="400" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=100%25&amp;height=400&amp;hl=en&amp;q=Jl.%20K.K%20Singawinata%20No.1,%20Sindangkasih,%20Kec.%20Purwakarta,%20Kabupaten%20Purwakarta,%20Jawa%20Barat%2041112+(Purwakarta%20Creative%20Center)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"><a href="https://www.gps.ie/">gps devices</a></iframe></div>
       </div>

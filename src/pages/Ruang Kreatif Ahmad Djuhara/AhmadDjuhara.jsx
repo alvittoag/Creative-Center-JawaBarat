@@ -3,6 +3,7 @@ import Navbar from '../../components/globals/Navbar'
 import CardRuangan from '../../components/globals/CardRuangan'
 import assets from '../../assets/assets'
 import Footer from '../../components/globals/Footer'
+import { NavLink } from "react-router-dom";
 
 export default function AhmadDjuhara() {
   return (
@@ -17,7 +18,11 @@ export default function AhmadDjuhara() {
         <p className='text-black leading-relaxed text-justify mr-20'>Ruang Kreatif Ahmad Djuhara terletak di Jl. Kesenden, Kec. Kejaksan, Kota Cirebon. Letaknya yang strategis berada di pusat kota dan berada di sebelah utara Balai Kota Cirebon dan Alun - Alun Kota Cirebon Ruang Kreatif Ahmad Djuhara juga memilik akses yang mudah dijangkau karena dekat dengan Gerbang Tol Plumbon 2, dimana dapat ditempuh kurang lebih 18 menit.</p>
             <p className='text-black mt-4'><a className='font-bold'>Luas Area</a> : 33.000 m2</p>
             <p className='text-black mt-3'><a className='font-bold'>Kapasitas Parkir</a> : 100 Mobil dan Motor</p>
-            <a href="" className='btn text-white border-white bg-[#1A8C44] mt-10 w-44'>Lihat Jadwal Ruangan</a>
+            <NavLink to="/jadwalAD">
+              <a href="" className='btn text-white border-white bg-[#1A8C44] mt-10 w-44'>
+                Lihat Jadwal Ruangan
+              </a>
+            </NavLink>
         </div>
         <div className="width: 100%"><iframe width="400" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=100%25&amp;height=400&amp;hl=en&amp;q=8H23+P4Q,%20Kesenden,%20Kejaksan,%20Cirebon%20City,%20West%20Java%2045121+(Ahmad%20Djuhara%20Cirebon%20Creative%20Center)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"><a href="https://www.gps.ie/">gps trackers</a></iframe></div>
       </div>

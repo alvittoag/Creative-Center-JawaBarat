@@ -220,7 +220,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="bg-white h-screen">
+    <div className="bg-white h-auto">
       <Navbar />
 
       <div className="px-10 py-5">
@@ -318,9 +318,9 @@ export default function Profile() {
                 <td className="font-bold">
                   <p
                     className={`p-2 rounded-lg text-center bg-gray-200 ${
-                      item.user_status === "Diterima" && "bg-green-200"
-                    } ${item.user_status === "Ditolak" && "bg-red-200"} ${
-                      item.user_status === "Selesai" && "bg-green-300"
+                      item.user_status === "Diterima" && "bg-green-500"
+                    } ${item.user_status === "Ditolak" && "bg-red-500"} ${
+                      item.user_status === "Selesai" && "bg-green-500"
                     } ${
                       item.user_status === "Dibatalkan" &&
                       "bg-red-600 text-white"
@@ -406,14 +406,17 @@ export default function Profile() {
                 >
                   <td>
                     <p
-                      className={`p-2 font-semibold text-sm ${
+                      className={`p-2 font-bold text-sm ${
                         item.user_status === "Belum Bayar" && "bg-red-300"
                       } ${
                         item.user_status === "Sudah Bayar" && "bg-green-300"
-                      } ${item.user_status === "Selesai" && "bg-green-500"}  ${
+                      } ${item.user_status === "Selesai" && "bg-green-500"} 
+                      
+                      ${
                         item.user_status === "Pembayaran Ditolak" &&
                         "bg-red-400"
                       } rounded-lg`}
+
                     >
                       {item.user_status}
                     </p>

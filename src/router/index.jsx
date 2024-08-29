@@ -22,6 +22,7 @@ import PrivateRouteAuth from "../components/private-route/PrivateRouteAuth";
 import Peminjaman from "../pages/peminjaman/Peminjaman";
 import VerificationPage from "../pages/verification/VerificationPage";
 import FormProfile from "../components/form/FormProfile";
+import PedomanRuangan from "../pages/Pedoman Ruangan/PedomanRuangan";
 
 const Router = () => {
   return (
@@ -56,6 +57,7 @@ const Router = () => {
           <Route path="/jadwal" Component={Jadwal} />
           <Route path="/jadwalAD" Component={JadwalAD} />
           <Route path="/jadwalPCC" Component={JadwalPCC} />
+          <Route path="/pedomanRuangan" Component={PedomanRuangan}/>
           {/* <Route path="/peminjaman" Component={PeminjamanRuangan} /> */}
 
           <Route path="/BogorCreativeCenter" Component={BCC} />

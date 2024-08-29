@@ -10,8 +10,7 @@ export default function Footer() {
                 <img src="src\assets\logoNav2.png" alt="" className='w-[312px] h-[60px]'/>
             </div>
 
-            <p className='text-white'>Figma ipsum component variant main layer. Scale text union rotate duplicate fill vertical. Mask text link undo duplicate. Component vector flows pen fill follower underline content frame. Connection ellipse effect invite bullet pixel outline arrange comment polygon.
-            Hand subtract frame main editor variant. Overflow layer variant vertical.</p>
+            <p className='text-white text-justify'>Creative Center merupakan sarana dalam pengembangan dan pemberdayaan ekonomi kreatif Jawa Barat yang memiliki fungsi sebagai pusat inovasi dan kekayaan intelektual, pusat pendidikan dan pelatihan, pusat promosi dan pemasaran, pusat pengembangan industri perangkat lunak dan konten, serta pusat inkubasi bisnis</p>
 
             <div className="flex mt-6">
                 <img src="src\assets\facebook.png" alt="" className='w-[40px] h-[37px] mr-2'/>
